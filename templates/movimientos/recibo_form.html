@@ -1,0 +1,109 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}"/>
+
+    <style>
+        label[for="id_forma_pago"] {
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="/admin/clientes/cliente/">{% trans 'Clientes' %}</a>
+        &rsaquo; {% trans 'Cobrar' %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% block content_title %}{% endblock %}
+    <h1>Recibo de {{ cliente }}</h1>
+    <div id="content-main">
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <fieldset class="module aligned ">
+                    <input type="hidden" name="cliente" value="{{ cliente.id }}">
+
+                    <div class="form-row">
+                        <div>
+                            {{ form }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                    <h2>Actividades a pagar:</h2>
+                    {% for actividad in actividades %}
+                        <div class="form-row">
+                            <div>
+                                <label class="required" for="{{ actividad.id }}">{{ actividad }} - {{ actividad.precio }}</label>
+                                <input class="vTextField actividad" type="checkbox" id="{{ actividad.id }}" precio="{{ actividad.precio }}">
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <input type="hidden" name="actividades[]" id="actividades"/>
+
+                    <div class="form-row">
+                        <div>
+                            <label class="required">Monto total:</label>
+                            <input type="number" name="monto" id="monto" readonly="readonly" value="0">
+                        </div>
+                    </div>
+                    <br>
+
+                </fieldset>
+                <div class="submit-row">
+                    <input type="button" class="default" id="generar_pago" value="Generar recibo">
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            actividades = [];
+            $("#generar_pago").attr("disabled", true);
+
+            $(".actividad").on("click", function() {
+                let precio = parseInt($(this).attr("precio"));
+                let total = parseInt($("#monto").val());
+
+                if ($(this).is(":checked")) {
+                    $("#monto").val(total + precio);
+                    actividades.push($(this).attr("id"));
+                } else {
+                    let index = actividades.indexOf($(this).attr("id"));
+                    if (index > -1) {
+                        $("#monto").val(total - precio);
+                        actividades.splice(index, 1);
+                    }
+                }
+
+                if (actividades.length > 0) {
+                    $("#generar_pago").attr("disabled", false);
+                } else {
+                    $("#generar_pago").attr("disabled", true);
+                }
+            });
+
+            $("#generar_pago").on("click", function() {
+                $("#actividades").val(actividades);
+                $("form").submit();
+            })
+        });
+    </script>
+
+{% endblock %}
+

@@ -8,6 +8,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib import admin
 
 from clientes.models import Cliente
+from adelantos.models import Adelanto
 from .models import Recibo, CierreCaja
 
 
@@ -74,9 +75,14 @@ class ReciboCreate(CreateView):
         cliente = Cliente.objects.get(pk=client_id)
         context["title"] = "Recibo"
         context["actividades"] = self.get_actividades(cliente)
+        context["adelantos"] = self.get_adelantos(cliente.id)
         context["cliente"] = cliente
         context.update(admin.site.each_context(self.request))
         return context
+
+    def get_adelantos(self, cliente_id):
+        adelantos = Adelanto.objects.filter(cliente=cliente_id)
+        return adelantos
 
     def get_actividades(self, cliente):
         actividades = cliente.actividades.all()
@@ -85,6 +91,7 @@ class ReciboCreate(CreateView):
     def form_valid(self, form):
         actividades = self.request.POST.getlist("actividades[]", None)
         cliente_id = self.request.POST.get("cliente")
+        adelantos = self.get_adelantos(cliente_id)
         monto = self.request.POST.get("monto")
         forma_pago_id = self.request.POST.get("forma_pago")
         try:
@@ -98,6 +105,7 @@ class ReciboCreate(CreateView):
         recibo.cliente_id = cliente_id
         recibo.forma_pago_id = forma_pago_id
         recibo.save()
+        adelantos.delete()
 
         if actividades:
             actividades = actividades[0].split(",")

@@ -11,8 +11,8 @@ class Adelanto(models.Model):
     monto = models.DecimalField(max_digits=8, decimal_places=2)
     fecha = models.DateTimeField(auto_now_add=True)
     #num_recibo = models.IntegerField(unique=True)
-    forma_pago = models.ForeignKey(FormaPago)
-    actividad = models.ManyToManyField(Actividad)
+    #forma_pago = models.ForeignKey(FormaPago)
+    #actividad = models.ManyToManyField(Actividad)
     cliente = models.ForeignKey(Cliente)
 
     def __str__(self):

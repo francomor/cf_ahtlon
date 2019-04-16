@@ -43,7 +43,16 @@
                         </div>
                     </div>
                     <div class="form-row">
-                    <h2>Actividades a pagar:</h2>
+                        <h3>Adelantos:</h3>
+                        {% for adelanto in adelantos %}
+                            <h4>{{ adelanto.monto }}$ el dia {{ adelanto.fecha }}</h4>
+                        {% empty %}
+                            <h4>No tiene</h4>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-row">
+                    <h3>Actividades a pagar:</h3>
                     {% for actividad in actividades %}
                         <div class="form-row">
                             <div>

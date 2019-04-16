@@ -5,9 +5,9 @@ from .models import Adelanto
 # Register your models here.
 class AdelantoAdmin(admin.ModelAdmin):
     #actions = [reporte_actividades]
-    fields = ("cliente", "actividad", "forma_pago", "monto")
+    fields = ("cliente", "monto")
     search_fields = ['cliente__nombre']
-    list_display = ["cliente", "get_actividades", "fecha", "monto"]
+    list_display = ["cliente", "fecha", "monto"]
 
     def get_actividades(self, obj):
     	return " | ".join([act.nombre for act in obj.actividad.all()])

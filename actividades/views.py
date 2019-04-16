@@ -48,8 +48,9 @@ def get_deudores(request, pk):
 
     for cliente in clientes_de_actividad:
         if recibos_mes_actual.filter(cliente__pk=cliente.pk).count() == 0:
-            ultimo_recibo = Recibo.objects.filter(cliente__pk=cliente.pk).last().str_numero_y_fecha()
+            ultimo_recibo = Recibo.objects.filter(cliente__pk=cliente.pk).last()
             if ultimo_recibo:
+                ultimo_recibo = ultimo_recibo.str_numero_y_fecha()
                 deudores.append([cliente, ultimo_recibo])
 
     context = {

@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from django.shortcuts import redirect
-from django.conf.urls import url
+
+from django.urls import re_path
 
 from .models import Recibo, FormaPago, CierreCaja
 from .views import generar_caja
@@ -53,7 +54,7 @@ class CierreCajaAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super(CierreCajaAdmin, self).get_urls()
         my_urls = [
-            url(r'^generar_caja/', generar_caja),
+            re_path(r'^generar_caja/', generar_caja),
         ]
         return my_urls + urls
 

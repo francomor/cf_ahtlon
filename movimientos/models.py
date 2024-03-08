@@ -19,9 +19,9 @@ class Recibo(models.Model):
     monto = models.DecimalField(max_digits=8, decimal_places=2)
     fecha = models.DateTimeField(auto_now_add=True)
     num_recibo = models.IntegerField(unique=True)
-    forma_pago = models.ForeignKey(FormaPago)
+    forma_pago = models.ForeignKey(FormaPago, on_delete=models.DO_NOTHING)
     actividad = models.ManyToManyField(Actividad)
-    cliente = models.ForeignKey(Cliente)
+    cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return "%s | $%s | Numero de recibo: %s" % (self.cliente, self.monto, self.num_recibo)

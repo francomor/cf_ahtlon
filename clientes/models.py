@@ -25,7 +25,7 @@ class Telefono(models.Model):
 
     tipo = models.CharField(max_length=2, choices=TELEFONOS_CHOICES, default="MV")
     valor = models.CharField(max_length=40)
-    cliente = models.ForeignKey(Cliente)
+    cliente = models.ForeignKey(Cliente, on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return '%s - %s' % (self.get_tipo_display(), self.valor)
